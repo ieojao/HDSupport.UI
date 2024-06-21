@@ -18,7 +18,7 @@ COPY . .
 RUN npm install --prefix my-app
 
 # Constrói o aplicativo
-RUN npm run build
+RUN npm run build --prefix my-app
 
 # Expõe a porta (ajuste conforme necessário)
 EXPOSE 3000

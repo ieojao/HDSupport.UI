@@ -15,7 +15,7 @@ ENV LC_ALL en_US.UTF-8
 COPY . .
 
 # Instala as dependências
-RUN npm install
+RUN npm install --prefix my-app
 
 # Constrói o aplicativo
 RUN npm run build

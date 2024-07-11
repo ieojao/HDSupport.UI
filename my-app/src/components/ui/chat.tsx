@@ -19,6 +19,7 @@ interface Usuarios {
 	statusConversa: number;
 	tokenRedefinicaoSenha: string;
 	dataHoraGeracaoToken: string;
+	teste: any;
 }
 
 enum TipoConversa {

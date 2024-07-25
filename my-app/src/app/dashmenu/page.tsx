@@ -1,15 +1,23 @@
 'use client'
- // Supondo que useClient esteja definido nesta localização
-
+import Pizza from "@/components/ui/pizza";
 import CardChamados from "@/components/ui/cardchamados";
 import Dados from "@/components/ui/dados";
 import SidebarMenuResponse from "@/components/ui/sidebarmenuResponse";
 import SidebarMenu from "@/components/ui/sidebarmenu";
 import { useEffect, useState } from "react";
-import Pizza from "@/components/ui/pizza";
 import axios from "axios";
 import HeaderDash from "@/components/ui/headerdash";
 import { Moon, Sun } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+interface User {
+  id: number;
+  nome: string;
+  email: string;
+  cargo: string;
+}
+
+let carregou = false;
 
 export default function Dashboard() {
   const [data, setData] = useState([
@@ -27,7 +35,9 @@ export default function Dashboard() {
     },
   ]);
   
-
+  const token = typeof window !== 'undefined' ? window.localStorage.getItem('token') : null;
+  const [userData, setUserData] = useState<User | null>(null);
+  const router = useRouter();
    const [darkMode, setDarkMode] = useState(false)
   const toggleDarkMode = () => { 
     setDarkMode(!darkMode); 
@@ -52,7 +62,7 @@ useEffect(() => {
   useEffect(() => {
     async function fetchChamados() {
       try {
-        const response = await axios.get('https://localhost:7299/api/Conversa/Dados-Chamados-Dashboard');
+        const response = await axios.get('https://testing-api.hdsupport.bne.com.br/api/Conversa/Dados-Chamados-Dashboard');
         setData(response.data);
 
         // Atualiza os dados com os valores recebidos da API
@@ -77,6 +87,44 @@ useEffect(() => {
     fetchChamados();
   }, []);
 
+
+  //verificar autorização
+
+  const fetchData = async (token: string | null) => {
+    try {
+        const response = await axios.get(`https://testing-api.hdsupport.bne.com.br/api/Usuario/BuscarPorTokenJWT/${token}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        console.log(response.data);
+        return response.data; // Retorne os dados da resposta
+    } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+    }
+};
+
+useEffect(() => {
+  if (token) {
+    fetchData(token)
+      .then((data) => {
+        setUserData(data);
+        if (data.cargo !== "HelpDesk" && data.cargo !== "RH") {
+          router.push('/Profile');
+        }else{
+          carregou = true;
+        }
+      })
+      .catch((error) => {
+        console.log('Erro ao buscar dados do usuário:', error);
+      });
+  } else {
+    console.log('Token não está presente no localStorage');
+    router.push('/login');
+  }
+}, [token]);
+
+if(carregou){
   return (
     <div className="">
       <div className="bg-neutral-950 dark:bg-white min-h-screen h-[100vh] flex max-[820px]:flex-col items-start overflow-hidden max-[750px]:overflow-visible">
@@ -96,4 +144,6 @@ useEffect(() => {
     </div>
     </div>
   );
+}  
+
 }

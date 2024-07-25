@@ -6,13 +6,13 @@ import axios from "axios";
 export default function Pizza() {
   
   const token = typeof window !== 'undefined' ? window.localStorage.getItem('token') : null;
-  const [equipamentosData, setEquipamentosData] = useState([]);
 
+  const [equipamentosData, setEquipamentosData] = useState([]);
   useEffect(() => {
     async function fetchData() {
       
       try {
-        const response = await axios.get('https://hd-support-api.azurewebsites.net/api/Equipamentos/Dados-Equipamento-Pizza',
+        const response = await axios.get('https://testing-api.hdsupport.bne.com.br/api/Equipamentos/Dados-Equipamento-Pizza',
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,

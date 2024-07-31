@@ -13,12 +13,13 @@ ENV LC_ALL C.UTF-8
 
 # Copia os arquivos do projeto
 COPY . .
+COPY ["my-app/package.json", "package.json"]
 
 # Instala as dependências
-RUN npm install --prefix my-app
+RUN npm install
 
 # Constrói o aplicativo
-RUN npm run build --prefix my-app
+RUN npm run build
 
 # Expõe a porta (ajuste conforme necessário)
 EXPOSE 3000

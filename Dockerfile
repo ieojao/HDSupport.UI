@@ -12,7 +12,7 @@ ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 # Copia os arquivos do projeto
-COPY my-app/src/. .
+COPY my-app/. .
 COPY ["my-app/package.json", "package.json"]
 COPY ["my-app/package-lock.json", "package-lock.json"]
 

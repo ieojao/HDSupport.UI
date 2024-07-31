@@ -12,8 +12,9 @@ ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 # Copia os arquivos do projeto
-COPY . .
+COPY my-app/src/. .
 COPY ["my-app/package.json", "package.json"]
+COPY ["my-app/package-lock.json", "package-lock.json"]
 
 # Instala as dependências
 RUN npm install

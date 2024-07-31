@@ -26,22 +26,7 @@ spec:
         image: #{DOCKER_REGISTRY}#/#{kubernetes.imagename}#:#{kubernetes.imageversion}#
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
-        env:
-        - name: "ASPNETCORE_ENVIRONMENT"
-          value: "#{ASPNETCORE_ENVIRONMENT}#"
-
-        - name: "Logging__LogLevel__Default"
-          value: "#{Logging.LogLevel.Default}#"
-        - name: "Logging__LogLevel__Microsoft.AspNetCore"
-          value: "#{Logging.LogLevel.Microsoft.AspNetCore}#"
-
-        - name: "ConnectionStrings__DefaultConnection"
-          value: "#{ConnectionStrings.DefaultConnection}#"
-        
-        - name: "AllowedHosts"
-          value: "#{AllowedHosts}#"
-
+        - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
@@ -55,8 +40,8 @@ spec:
   ports:
   - name: http
     protocol: TCP
-    port: 8080
-    targetPort: 8080
+    port: 3000
+    targetPort: 3000
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -84,4 +69,4 @@ spec:
               service:
                 name: #{kubernetes.deploymentname}#
                 port:
-                  number: 8080
+                  number: 3000

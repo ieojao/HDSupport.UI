@@ -5,16 +5,18 @@ import { useState, useEffect } from "react";
 import Loading from "@/components/layout/loading";
 import path from "path";
 import { UsuarioService } from "@/service/ApiConnection";
+import { Usuario } from "@/context/DataInterface";
 
 export default function Page() {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const pathname = usePathname();
     const [loading, setLoading] = useState(false);
-    const [usuario, setUsuario] = useState([]);
+    const [usuario, setUsuario] = useState<Usuario | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        if(!token){return;}
         UsuarioService.BuscarPorTokenJWT(token)
             .then((response) => {
                 console.log(response.data);
@@ -101,7 +103,7 @@ export default function Page() {
                     </button>
                 </div>
                 <div className="my-4 mx-6 py-4 space-x-1 space-y-2 text-slate-500 font-bold flex justify-center flex-wrap">
-                    <button onClick={navigationProfile} className="flex cursor-pointer hover:text-slate-300 transition-all ease-in-out duration-200 space-x-1"><UserCircle /><p className={`${open === true ? "hidden" : ""}`}>{usuario.nme_Usuario}</p></button>
+                    <button onClick={navigationProfile} className="flex cursor-pointer hover:text-slate-300 transition-all ease-in-out duration-200 space-x-1"><UserCircle /><p className={`${open === true ? "hidden" : ""}`}>{usuario?.nme_Usuario}</p></button>
                     <button onClick={logout} className="flex cursor-pointer hover:text-slate-300 transition-all ease-in-out duration-200"><DoorOpen /><p className={`${open === true ? "hidden" : ""}`}>Sair</p></button>
                 </div>
             </div>

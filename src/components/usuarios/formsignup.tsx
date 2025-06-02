@@ -62,7 +62,7 @@ export default function LoginForm() {
             setBase64(base64String as string);
         }
     };
-    const convertToBase64 = (file) => {
+    const convertToBase64 = (file: File) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);

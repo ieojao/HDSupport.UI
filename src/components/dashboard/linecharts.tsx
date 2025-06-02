@@ -39,7 +39,7 @@ export default function Page() {
                 hAxis: {
                     title: "Year",
                     titleTextStyle: { color: "#333" },
-                    textStyle: { color: "#666" },
+                    textStyle: { color: "#202020" },
                     gridlines: { color: "transparent" },
                 },
                 vAxis: {
@@ -51,7 +51,7 @@ export default function Page() {
                 },
                 colors: ["#4f46e5", "#06b6d4"],
                 legend: { position: "bottom", textStyle: { color: "#333", fontSize: 14 } },
-                backgroundColor: "#171717",
+                backgroundColor: "transparent",
                 chartArea: { width: "70%", height: "60%" },
                 areaOpacity: 0.3,
                 animation: { startup: true, duration: 1000, easing: "out" },
@@ -69,8 +69,8 @@ export default function Page() {
         loadGoogleCharts();
     }, []);
     return (
-        <div className="max-w-xl w-full min-w-96 h-64 bg-neutral-900 border-t-3 border-blue-400 rounded-2xl overflow-hidden">
-            <div id="chart_div" className="w-full h-full" style={{ background: "#0a0a0a" }}></div>
+        <div className="w-1/2 h-64 border-t-3 border-blue-400 rounded-2xl overflow-hidden">
+            <div id="chart_div" className="w-full h-full bg-neutral-900"></div>
         </div>
     )
 }

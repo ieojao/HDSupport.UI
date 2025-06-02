@@ -16,7 +16,7 @@ export default function LoginForm() {
     const [senha, setSenha] = useState("");
     const [telefone, setTelefone] = useState("");
     const [base64, setBase64] = useState<string | undefined>(undefined);
-    const [cargo, setCargo] = useState("funcionario");
+    const [cargo, setCargo] = useState("HelpDesk");
     const [status, setStatus] = useState(1);
     const [statusConversa, setStatusConversa] = useState(1);
 
@@ -77,11 +77,10 @@ export default function LoginForm() {
             const response = await UsuarioService.Register(nome, email, senha, telefone, cargo, base64Imagem, status, statusConversa)
             setOpen(true);
             setTimeout(() => {
-                router.push("/");
+                router.push("/login");
             }, 2000);
         } catch (error) {
             console.error("Erro ao fazer um cadastro:", error);
-            setOpenErro(true);
             setTimeout(() => {
                 router.push("/register");
             }, 2000);

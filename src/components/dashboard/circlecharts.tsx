@@ -53,7 +53,7 @@ export default function Page() {
         loadGoogleCharts();
     }, []);
     return (
-        <div className="w-96 h-64 bg-neutral-900 border-t-3 border-sky-400 rounded-2xl overflow-hidden">
+        <div className="w-1/2 h-64 bg-neutral-900 border-t-3 border-sky-400 rounded-2xl overflow-hidden">
             <div id="piechart_3d" className="w-full h-full"></div>
         </div>
     )

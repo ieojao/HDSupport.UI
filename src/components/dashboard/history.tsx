@@ -6,7 +6,7 @@ export default function Page(){
     const router = useRouter();
 
     return(
-        <div className="w-11/12 px-10 py-4 bg-neutral-900 border-t-3 border-green-400 rounded-2xl">
+        <div className="w-10/12 px-10 py-4 mb-20 bg-neutral-900 border-t-3 border-green-400 rounded-2xl">
             <h1 className="w-full text-2xl font-bold text-emerald-400">History</h1>
             <div>
                 <div className="p-4 my-2 bg-slate-950 rounded-xl">

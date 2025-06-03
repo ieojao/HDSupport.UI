@@ -13,3 +13,14 @@ export interface Usuario {
     token_Redefinicao_Senha: string;
     dta_Token: string;
 }
+export interface Equipamentos {
+    id: number;
+    idf_Patrimonio: number;
+    modelo_Equipamento: string;
+    tpo_Equipamento: string;
+    dtl_Equipamento: string;
+    dta_Emprestimo_Inicio: string;
+    dta_Emprestimo_Final: string;
+    stt_Equipamento: string;
+    profissional_Hd: string;
+}

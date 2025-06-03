@@ -53,3 +53,20 @@ export class ChamadosService {
         })
     }
 }
+
+export class EquipamentosSevice {
+    static ListarEquipamentos(token: string){
+        return axiosInstance.get(`/Equipamentos/Lista-equipamentos/`, {
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
+    static ExcluirEquipamento(token: string, id: number){
+        return axiosInstance.delete(`/Equipamentos/Excluir-Maquina/${id}`, {
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
+}

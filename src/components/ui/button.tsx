@@ -13,7 +13,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         return (
             <Comp
                 className={cn(
-                    "w-full py-4 px-4 my-2 bg-gradient-to-r from-blue-600 to-sky-500 font-bold rounded-md cursor-pointer transition-all duration-200 ease-in-out hover:from-sky-500 hover:to-blue-600 hover-animated-gradient-button",
+                    "w-full py-4 px-4 my-2 bg-gradient-to-r from-blue-600 to-sky-500 font-bold rounded-md cursor-pointer transition-all duration-200 ease-in-out outline-0",
                     className
                 )}
                 ref={ref}

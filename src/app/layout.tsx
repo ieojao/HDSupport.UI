@@ -24,9 +24,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <head>
-        <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2004/2004739.png" type="image/x-icon" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >

@@ -85,9 +85,9 @@ export default function Page() {
                         <EyeOff className="mr-2"/>
                     </div>
 
-                    <button onClick={resetPassword} className="mt-3 text-blue-400 font-bold cursor-pointer hover:underline">
+                    <a onClick={resetPassword} className="mt-3 text-blue-400 font-bold cursor-pointer hover:underline">
                         Esqueceu a Senha?
-                    </button>
+                    </a>
                     
                     <Button type="submit" className="mt-5">
                         Login
@@ -96,9 +96,9 @@ export default function Page() {
                     <div className="mt-3 text-white relative text-center">
                         <span className="text-blue-200 font-bold">
                             Não possui conta?
-                            <button onClick={handleRegister} className="ml-2 text-sky-400 font-bold cursor-pointer hover:underline">
+                            <a onClick={handleRegister} className="ml-2 text-sky-400 font-bold cursor-pointer hover:underline">
                                 Registre-se
-                            </button>
+                            </a>
                         </span>
                     </div>
                 </form>

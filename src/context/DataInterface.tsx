@@ -21,6 +21,6 @@ export interface Equipamentos {
     dtl_Equipamento: string;
     dta_Emprestimo_Inicio: string;
     dta_Emprestimo_Final: string;
-    stt_Equipamento: string;
+    stt_Equipamento: number;
     profissional_Hd: string;
 }

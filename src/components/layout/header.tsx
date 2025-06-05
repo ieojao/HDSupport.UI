@@ -19,7 +19,6 @@ export default function Page() {
         if(!token){return;}
         UsuarioService.BuscarPorTokenJWT(token)
             .then((response) => {
-                console.log(response.data);
                 setUsuario(response.data);
             })
     }, [])

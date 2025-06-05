@@ -2,6 +2,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
+    //baseURL: "https://hdsupport-api.onrender.com/api/",
     baseURL: "https://localhost:7299/api/",
     headers: {
         "Content-Type": "application/json",
@@ -35,7 +36,7 @@ export class UsuarioService {
             status_Conversa: statusconversa,
         });
     }
-    static BuscarPorTokenJWT(token: string){
+    static BuscarPorTokenJWT(token: string) {
         return axiosInstance.get(`/Usuario/BuscarPorTokenJWT/${token}`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -55,16 +56,64 @@ export class ChamadosService {
 }
 
 export class EquipamentosSevice {
-    static ListarEquipamentos(token: string){
+    static ListarEquipamentos(token: string) {
         return axiosInstance.get(`/Equipamentos/Lista-equipamentos/`, {
-            headers:{
+            headers: {
                 Authorization: `Bearer ${token}`
             }
         })
     }
-    static ExcluirEquipamento(token: string, id: number){
+    static RegistroEquipamento(
+        token: string,
+        idf_Patrimonio: string,
+        modelo_Equipamento: string,
+        tpo_Equipamento: string,
+        dtl_Equipamento: string,
+        stt_Equipamento: number
+    ) {
+        return axiosInstance.post(`/Equipamentos/Registro-equipamentos`, {
+            idf_Patrimonio,
+            modelo_Equipamento,
+            tpo_Equipamento,
+            dtl_Equipamento,
+            stt_Equipamento
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
+    static EditarEquipamento(
+        token: string,
+        id: number,
+        idf_Patrimonio: string,
+        modelo_Equipamento: string,
+        tpo_Equipamento: string,
+        dtl_Equipamento: string,
+        dta_Emprestimo_Inicio: string,
+        dta_Emprestimo_Final: string,
+        stt_Equipamento: number,
+        profissional_Dh: string,
+    ) {
+        return axiosInstance.put(`/Equipamentos/Editar-Maquina/${id}`, {
+            id,
+            idf_Patrimonio,
+            modelo_Equipamento,
+            tpo_Equipamento,
+            dtl_Equipamento,
+            dta_Emprestimo_Inicio,
+            dta_Emprestimo_Final,
+            stt_Equipamento,
+            profissional_Dh,
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
+    static ExcluirEquipamento(token: string, id: number) {
         return axiosInstance.delete(`/Equipamentos/Excluir-Maquina/${id}`, {
-            headers:{
+            headers: {
                 Authorization: `Bearer ${token}`
             }
         })

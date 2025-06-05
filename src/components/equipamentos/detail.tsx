@@ -6,7 +6,16 @@ interface DetailsProps {
   equipamento: Equipamentos | null;
 }
 
+const status = [
+    "N/A",
+    "Disponivel",
+    "Emprestado",
+    "Danificado",
+    "Concerto",
+]
+
 export default function Details({ equipamento }: DetailsProps) {
+    if(!equipamento) return;
     return (
         <div className="w-full h-screen bg-black/50 flex justify-center items-center fixed inset-0 z-50">
             <div className="w-lg px-8 py-6 rounded-2xl bg-neutral-900 border-l-3 border-emerald-500">
@@ -30,7 +39,7 @@ export default function Details({ equipamento }: DetailsProps) {
                     </div>
                     <div className="py-2 border-b border-y-neutral-700 flex">
                         <h1 className="w-1/2 mr-4 font-bold">Status Equipamento:</h1>
-                        <p>{equipamento?.stt_Equipamento}</p>
+                        <p>{status[equipamento.stt_Equipamento]}</p>
                     </div>
                     <div className="py-2 border-b border-y-neutral-700 flex">
                         <h1 className="w-1/2 mr-4 font-bold">Inicio do Emprestimo:</h1>
@@ -40,9 +49,9 @@ export default function Details({ equipamento }: DetailsProps) {
                         <h1 className="w-1/2 mr-4 font-bold">Final do Emprestimo:</h1>
                         <p>{equipamento?.dta_Emprestimo_Final}</p>
                     </div>
-                    <div className="py-2 flex">
+                    <div className="py-2 flex flex-col">
                         <h1 className="w-1/2 mr-4 font-bold">Detalhes:</h1>
-                        <p>{equipamento?.dtl_Equipamento}</p>
+                        <p className="px-2">{equipamento?.dtl_Equipamento}</p>
                     </div>
                 </div>
             </div>

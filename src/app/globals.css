@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #000000;
     --foreground: #ededed;
   }
 }
@@ -23,4 +23,54 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+td{
+  text-align: center;
+}
+
+.hover-animated-gradient-button:hover {
+  animation: gradientHoverMove 4s ease infinite;
+}
+
+.triangle-animation {
+  animation: rotateTriangle 2s ease-in-out infinite;
+}
+
+@keyframes rotateTriangle {
+
+  0%,
+  100% {
+    transform: rotate(-40deg);
+  }
+
+  50% {
+    transform: rotate(-50deg);
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes gradientHoverMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }

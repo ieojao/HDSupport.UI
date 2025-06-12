@@ -63,19 +63,18 @@ export default function Home() {
     return (
         <div className="w-full h-screen flex items-start overflow-hidden">
             <Header />
-            <div className="w-full h-screen flex flex-col items-center overflow-auto space-y-7">
-                <div className="flex w-10/12 pt-20 space-x-3">
-                    <div className="flex flex-col justify-center items-center space-y-3">
+            <div className="w-full h-screen px-10 flex flex-col items-center overflow-auto space-y-7">
+                <div className="flex w-full pt-10 space-x-3">
+                    <div className="w-full flex items-center space-x-3 ">
                         {chamados.map((item) => (
-                            <div className="flex justify-center">
+                            <div className="w-full flex justify-center">
                                 <CardChamados key={item.title} title={item.title} dados={item.dados} />
                             </div>
                         ))}
                     </div>
-                    <BarCharts />
                 </div>
-                <div className="w-10/12 space-x-2 space-y-2 flex">
-                    <LineCharts />
+                <div className="w-full space-x-2 space-y-2 flex">
+                    <BarCharts />
                     <CircleCharts />
                 </div>
                 <History />

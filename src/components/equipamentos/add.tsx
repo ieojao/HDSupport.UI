@@ -1,7 +1,5 @@
 "use client"
-import { Equipamentos } from "@/context/DataInterface";
 import { EquipamentosSevice } from "@/service/ApiConnection";
-import { stat } from "fs";
 import { useState } from "react";
 
 export default function Page() {
@@ -10,22 +8,44 @@ export default function Page() {
     const [tipo, setTipo] = useState('');
     const [detalhe, setDetalhe] = useState('');
     const [status, setStatus] = useState(1);
+    const [imagem, setImagem] = useState<string>(''); // base64
+
+    const handleImagemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result?.toString() || '';
+            setImagem(base64String);
+        };
+        reader.readAsDataURL(file);
+    };
 
     const addEquipamento = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            if (!token) { return; }
-            const response = await EquipamentosSevice.RegistroEquipamento(token, idf_Patrimonio, modelo, tipo, detalhe, status);
+            if (!token) return;
+
+            const response = await EquipamentosSevice.RegistroEquipamento(
+                token,
+                idf_Patrimonio,
+                modelo,
+                tipo,
+                detalhe,
+                status,
+                imagem
+            );
+
             console.log(response.data);
             alert('sucesso');
             window.location.reload();
-        }
-        catch (error) {
+        } catch (error) {
             alert('Erro');
             console.log('erro ao tentar adicionar', error);
         }
-    }
+    };
 
     return (
         <div className="w-full h-screen bg-black/50 flex justify-center items-center fixed inset-0 z-50">
@@ -33,46 +53,51 @@ export default function Page() {
                 <h1 className="mb-4 text-blue-400 text-2xl">Adicionar Equipamento</h1>
                 <form onSubmit={addEquipamento}>
                     <div>
-                        <label htmlFor="" className="font-bold">Idf_Patrimonio:</label>
+                        <label className="font-bold">Imagem do Equipamento:</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="w-full py-2 px-4 bg-black rounded-lg outline-0"
+                            onChange={handleImagemChange}
+                        />
+                    </div>
+                    <div>
+                        <label className="font-bold">Idf_Patrimonio:</label>
                         <input
                             type="text"
                             className="w-full py-2 px-4 bg-black rounded-lg outline-0"
-                            placeholder="Digite"
                             value={idf_Patrimonio}
                             onChange={(e) => setIdf_Patrimonio(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label htmlFor="" className="font-bold">Modelo_Equipamento:</label>
+                        <label className="font-bold">Modelo_Equipamento:</label>
                         <input
                             type="text"
                             className="w-full py-2 px-4 bg-black rounded-lg outline-0"
-                            placeholder="Digite"
                             value={modelo}
                             onChange={(e) => setModelo(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label htmlFor="" className="font-bold">Tipo_Equipamento:</label>
+                        <label className="font-bold">Tipo_Equipamento:</label>
                         <input
                             type="text"
                             className="w-full py-2 px-4 bg-black rounded-lg outline-0"
-                            placeholder="Digite"
                             value={tipo}
                             onChange={(e) => setTipo(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label htmlFor="" className="font-bold">Detalhe_Equipamento</label>
+                        <label className="font-bold">Detalhe_Equipamento</label>
                         <textarea
                             className="max-w-full min-w-full min-h-30 py-2 px-4 bg-black rounded-lg outline-0"
-                            placeholder="Digite"
                             value={detalhe}
                             onChange={(e) => setDetalhe(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label htmlFor="" className="font-bold">Status:</label>
+                        <label className="font-bold">Status:</label>
                         <select
                             className="w-full p-3 bg-black rounded-lg outline-0"
                             value={status}
@@ -88,5 +113,5 @@ export default function Page() {
                 </form>
             </div>
         </div>
-    )
+    );
 }

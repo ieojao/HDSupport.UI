@@ -2,7 +2,6 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    //baseURL: "https://hdsupport-api.onrender.com/api/",
     baseURL: "https://localhost:7299/api/",
     headers: {
         "Content-Type": "application/json",
@@ -53,6 +52,13 @@ export class ChamadosService {
             }
         })
     }
+    static TodosChamados(token: string) {
+        return axiosInstance.get(`/Conversa/Listar-Todos-Chamados`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
 }
 
 export class EquipamentosSevice {
@@ -69,14 +75,16 @@ export class EquipamentosSevice {
         modelo_Equipamento: string,
         tpo_Equipamento: string,
         dtl_Equipamento: string,
-        stt_Equipamento: number
+        stt_Equipamento: number,
+        img_Equipamento: string,
     ) {
         return axiosInstance.post(`/Equipamentos/Registro-equipamentos`, {
             idf_Patrimonio,
             modelo_Equipamento,
             tpo_Equipamento,
             dtl_Equipamento,
-            stt_Equipamento
+            stt_Equipamento,
+            img_Equipamento,
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -113,6 +121,20 @@ export class EquipamentosSevice {
     }
     static ExcluirEquipamento(token: string, id: number) {
         return axiosInstance.delete(`/Equipamentos/Excluir-Maquina/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
+    static Graficobarras(token: string){
+        return axiosInstance.get(`/Equipamentos/Dados-Equipamento-Barras`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
+    static GraficoPizza(token: string){
+        return axiosInstance.get(`/Equipamentos/Dados-Equipamento-Pizza`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

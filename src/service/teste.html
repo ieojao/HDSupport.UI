@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico da Dashboard</title>
+    <link href="https://unpkg.com/lucide@latest" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --border-color: #f3f4f6;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --hover-bg: #f9fafb;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f9fafb;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+        
+        .history-container {
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .history-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .history-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .history-header i {
+            margin-right: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .history-item {
+            padding: 18px 24px;
+            display: flex;
+            align-items: flex-start;
+            transition: background-color 0.2s ease;
+        }
+        
+        .history-item:hover {
+            background-color: var(--hover-bg);
+        }
+        
+        .history-item:not(:last-child) {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .item-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 16px;
+        }
+        
+        .item-content {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .item-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0 0 4px 0;
+            color: var(--text-primary);
+        }
+        
+        .item-description {
+            font-size: 13px;
+            margin: 0 0 8px 0;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .item-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .item-time i {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+        }
+        
+        .item-status {
+            margin-left: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .history-footer {
+            padding: 16px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .view-all {
+            color: var(--accent-blue);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .view-all:hover {
+            color: #2563eb;
+        }
+        
+        /* Cores dos ícones */
+        .icon-yellow { color: var(--accent-yellow); }
+        .icon-blue { color: var(--accent-blue); }
+        .icon-green { color: var(--accent-green); }
+        .icon-purple { color: var(--accent-purple); }
+    </style>
+</head>
+<body>
+    <div class="history-container">
+        <div class="history-header">
+            <h2>
+                <i data-lucide="clock"></i>
+                Histórico de Atividades
+            </h2>
+        </div>
+        
+        <div class="history-list">
+            <div class="history-item">
+                <div class="item-icon icon-yellow">
+                    <i data-lucide="alert-circle"></i>
+                </div>
+                <div class="item-content">
+                    <h3 class="item-title">Novo chamado criado</h3>
+                    <p class="item-description">Chamado #1234 foi aberto por João Silva</p>
+                    <div class="item-time">
+                        <i data-lucide="clock"></i>
+                        <span>10 minutos atrás</span>
+                    </div>
+                </div>
+                <div class="item-status">
+                    <i data-lucide="clock" class="icon-yellow"></i>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="item-icon icon-blue">
+                    <i data-lucide="activity"></i>
+                </div>
+                <div class="item-content">
+                    <h3 class="item-title">Atualização de sistema</h3>
+                    <p class="item-description">Atualização v2.3.1 aplicada com sucesso</p>
+                    <div class="item-time">
+                        <i data-lucide="clock"></i>
+                        <span>2 horas atrás</span>
+                    </div>
+                </div>
+                <div class="item-status">
+                    <i data-lucide="check-circle" class="icon-green"></i>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="item-icon icon-green">
+                    <i data-lucide="user"></i>
+                </div>
+                <div class="item-content">
+                    <h3 class="item-title">Novo usuário registrado</h3>
+                    <p class="item-description">Maria Oliveira criou uma conta</p>
+                    <div class="item-time">
+                        <i data-lucide="clock"></i>
+                        <span>Ontem, 15:30</span>
+                    </div>
+                </div>
+                <div class="item-status">
+                    <i data-lucide="check-circle" class="icon-green"></i>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="item-icon icon-purple">
+                    <i data-lucide="clock"></i>
+                </div>
+                <div class="item-content">
+                    <h3 class="item-title">Manutenção agendada</h3>
+                    <p class="item-description">Manutenção programada para 25/05 às 23:00</p>
+                    <div class="item-time">
+                        <i data-lucide="clock"></i>
+                        <span>25/05/2023</span>
+                    </div>
+                </div>
+                <div class="item-status">
+                    <i data-lucide="clock" class="icon-purple"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history-footer">
+            <button class="view-all">Ver histórico completo</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

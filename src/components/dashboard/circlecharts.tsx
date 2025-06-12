@@ -1,7 +1,21 @@
 "use client"
-import { useEffect } from "react";
+import { EquipamentosSevice } from "@/service/ApiConnection";
+import { useEffect, useState } from "react";
 
 export default function Page() {
+    const [dados, setDados] = useState([]);
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        EquipamentosSevice.GraficoPizza(token)
+            .then((response) => {
+                console.log('Dados do grafico de pizza', response.data);
+                setDados(response.data);
+            })
+            .catch((error) => {
+                console.log('Erro ao listar os dados do grafico de pizza', error);
+            })
+    }, []);
     useEffect(() => {
         const loadGoogleCharts = () => {
             const script = document.createElement("script");
@@ -18,15 +32,15 @@ export default function Page() {
 
         const drawChart = () => {
             const data = window.google.visualization.arrayToDataTable([
-                ["Task", "Hours per Day"],
-                ["Work", 11],
-                ["Eat", 2],
-                ["Commute", 2],
-                ["Watch TV", 2],
+                ["Status", "Quantidade"],
+                ["Disponivel", dados[0] || 1],
+                ["Emprestado", dados[1] || 2],
+                ["Danificado", dados[2] || 1],
+                ["Concerto", dados[3] || 1],
             ]);
 
             const options = {
-                title: "My Daily Activities",
+                title: "Grafico de Status de equipamento",
                 is3D: true,
                 backgroundColor: "#171717",
                 pieHole: 0,
@@ -51,9 +65,9 @@ export default function Page() {
         };
 
         loadGoogleCharts();
-    }, []);
+    });
     return (
-        <div className="w-1/2 h-64 bg-neutral-900 border-t-3 border-sky-400 rounded-2xl overflow-hidden">
+        <div className="w-1/2 h-80 bg-neutral-900 border-t-3 border-sky-400 rounded-2xl overflow-hidden">
             <div id="piechart_3d" className="w-full h-full"></div>
         </div>
     )

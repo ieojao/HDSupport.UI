@@ -27,7 +27,7 @@ const CardChamados: React.FC <{title: string; dados: number;}> = ({title, dados}
   []);
     return(
         <div className="w-full flex items-center justify-center">
-             <div className="w-80 h-30 px-5 py-5 bg-neutral-900 rounded-xl border-t-3 border-purple-500 space-y-3">
+             <div className="w-full h-30 px-5 py-5 bg-neutral-900 rounded-xl border-t-3 border-purple-500 space-y-3">
                 <h1 className="text-slate-50">Chamados <b className="bg-gradient-to-r from-blue-600 to-cyan-500 font-bold inline-block text-transparent bg-clip-text">{title}</b></h1>
                 <h1 className="text-slate-50 font-bold text-2xl">{dados}</h1>
             </div>

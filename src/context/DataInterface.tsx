@@ -23,4 +23,17 @@ export interface Equipamentos {
     dta_Emprestimo_Final: string;
     stt_Equipamento: number;
     profissional_Hd: string;
+    img_Equipamento: string;
+}
+export interface Chamados {
+    id: number;
+    funcionario: Usuario;
+    idf_Funcionario: number;
+    cliente: Usuario;
+    idf_Cliente: number;
+    tipo_Conversa: number;
+    criptografia_Conversa: string;
+    stt_Conversa: number;
+    dta_Inicio_Conversa: string;
+    dta_Conclusao_Conversa: string;
 }

@@ -17,9 +17,11 @@ const status = [
 export default function Details({ equipamento }: DetailsProps) {
     if(!equipamento) return;
     return (
-        <div className="w-full h-screen bg-black/50 flex justify-center items-center fixed inset-0 z-50">
-            <div className="w-lg px-8 py-6 rounded-2xl bg-neutral-900 border-l-3 border-emerald-500">
-                <h1 className="mb-4 text-emerald-500 text-2xl">Detalhes do Equipamento</h1>
+        <div className="w-full h-screen bg-black/50 flex justify-center items-center fixed inset-0 z-50 overflow-auto">
+            <div className="h-screen">
+                <div className="w-lg px-8 py-6 my-10 rounded-2xl bg-neutral-900 border-l-3 border-emerald-500">
+                <h1 className="mb-4 text-emerald-500 text-2xl flex">Detalhes do Equipamento</h1>
+                <img src={equipamento.img_Equipamento} className="w-full"/>
                 <div>
                     <div className="py-2 border-b border-y-neutral-700 flex">
                         <h1 className="w-1/2 mr-4 font-bold">Id:</h1>
@@ -54,6 +56,7 @@ export default function Details({ equipamento }: DetailsProps) {
                         <p className="px-2">{equipamento?.dtl_Equipamento}</p>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     )

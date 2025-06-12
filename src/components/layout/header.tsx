@@ -101,9 +101,9 @@ export default function Header() {
                         <p className={`${open === true ? "hidden" : ""}`}>Usuarios</p>
                     </button>
                 </div>
-                <div className="my-4 mx-6 py-4 space-x-1 space-y-2 text-slate-500 font-bold flex justify-center flex-wrap">
-                    <button onClick={navigationProfile} className="flex cursor-pointer hover:text-slate-300 transition-all ease-in-out duration-200 space-x-1"><UserCircle /><p className={`${open === true ? "hidden" : ""}`}>{usuario?.nme_Usuario}</p></button>
-                    <button onClick={logout} className="flex cursor-pointer hover:text-slate-300 transition-all ease-in-out duration-200"><DoorOpen /><p className={`${open === true ? "hidden" : ""}`}>Sair</p></button>
+                <div className="my-4 mx-6 py-4 space-x-1 text-slate-500 font-bold flex justify-center items-center flex-wrap">
+                    <button onClick={navigationProfile} className="flex justify-center items-center cursor-pointer hover:text-slate-300 transition-all ease-in-out duration-200 space-x-1">{usuario?.img_Usuario ? (<img src={usuario?.img_Usuario} className="w-8 h-8 rounded-full" />) : (<UserCircle/>)}<p className={`${open === true ? "hidden" : ""}`}>{usuario?.nme_Usuario}</p></button>
+                    <button onClick={logout} className="my-auto flex justify-center items-center cursor-pointer hover:text-slate-300 transition-all ease-in-out duration-200"><DoorOpen /><p className={`${open === true ? "hidden" : ""}`}>Sair</p></button>
                 </div>
             </div>
             {loading && (

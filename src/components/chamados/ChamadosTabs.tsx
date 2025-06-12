@@ -21,6 +21,21 @@ type ChamadosTabsProps = {
 
 export default function ChamadosTabs({ router }: ChamadosTabsProps) {
   const [tab, setTab] = useState<"abertos" | "concluidos">("abertos");
+  const [chamados, setChamados] = useState({
+    abertos: chamadosAbertos,
+    concluidos: chamadosConcluidos
+  });
+
+  const handleFinalizarChamado = (id: number) => {
+    setChamados(prev => {
+      const chamadoFinalizado = prev.abertos.find((c: any) => c.id === id);
+      if (!chamadoFinalizado) return prev;
+      return {
+        abertos: prev.abertos.filter((c: any) => c.id !== id),
+        concluidos: [...prev.concluidos, { ...chamadoFinalizado, status: "concluido" }]
+      };
+    });
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-8">
@@ -39,8 +54,15 @@ export default function ChamadosTabs({ router }: ChamadosTabsProps) {
         </button>
       </div>
       <div className="bg-black rounded-b-lg p-4">
-        {(tab === "abertos" ? chamadosAbertos : chamadosConcluidos).map((c) => (
-          <ChamadoItem key={c.id} chamado={c} />
+        {(tab === "abertos" ? chamados.abertos : chamados.concluidos).map((c: any) => (
+          <ChamadoItem
+            key={c.id}
+            chamado={{
+              ...c,
+              status: c.status === 'aberto' ? 'OPEN' : c.status === 'concluido' ? 'SOLVED' : c.status
+            }}
+            onFinalizarChamado={handleFinalizarChamado}
+          />
         ))}
       </div>
     </div>

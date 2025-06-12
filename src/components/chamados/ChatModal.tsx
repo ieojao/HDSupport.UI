@@ -1,4 +1,6 @@
-export default function ChatModal({ chamado, onClose }: { chamado: any; onClose: () => void }) {
+import ChatArea from "./ChatArea";
+
+export default function ChatModal({ chamado, onClose, onFinalizarChamado }: { chamado: any; onClose: () => void; onFinalizarChamado: (id: number) => void }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
       <div className="bg-blue-950 text-white rounded-lg p-6 w-full max-w-md relative">
@@ -8,18 +10,7 @@ export default function ChatModal({ chamado, onClose }: { chamado: any; onClose:
         >
           X
         </button>
-        <h2 className="text-lg font-bold mb-4">Chat do chamado: {chamado.titulo}</h2>
-        <div className="h-40 bg-black rounded mb-4 p-2 overflow-y-auto">
-          {/* Aqui vão as mensagens do chat */}
-          <div className="text-blue-200">[Usuário]: Olá, preciso de ajuda!</div>
-        </div>
-        <input
-          className="w-full p-2 rounded bg-blue-800 text-white"
-          placeholder="Digite sua mensagem..."
-        />
-        <button className="mt-2 w-full bg-blue-700 hover:bg-blue-800 p-2 rounded">
-          Enviar
-        </button>
+        <ChatArea chat={chamado} onFinalizarChamado={onFinalizarChamado} />
       </div>
     </div>
   );

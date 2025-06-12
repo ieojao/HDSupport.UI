@@ -9,7 +9,7 @@ export default function Page() {
   const [selectedChat, setSelectedChat] = useState(null);
 
   return (
-    <div className="flex min-h-screen bg-black">
+    <div className="flex min-h-screen bg-black overflow-hidden">
       {/* Sidebar fixa */}
       <Header />
       {/* Bloco único: conversas + chat */}

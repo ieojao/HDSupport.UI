@@ -11,6 +11,7 @@ export default function Page() {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [token, setToken] = useState<string | null>(null);
 
     const handleLogin = async (e: any) => {
         e.preventDefault();
@@ -18,10 +19,15 @@ export default function Page() {
             const response = await UsuarioService.Login(email, senha)
             const token = response.data.token;
 
-            localStorage.setItem('token', token);
-            console.log('Login efetuado com sucesso!!:', response.data);
-            window.alert(`Login efetuado com sucesso!!`);
-            router.push('/');
+            if (token) {
+                localStorage.setItem('token', token);
+                setToken(token);
+                console.log('Login efetuado com sucesso!!:', response.data);
+                window.alert(`Login efetuado com sucesso!!`);
+                router.push('/');
+            } else {
+                window.alert('Token não recebido do backend.');
+            }
         } catch (error) {
             console.error('Erro ao efetuar login!!:', error);
             window.alert(`Erro ao efetuar login!!${error}`);
@@ -40,6 +46,13 @@ export default function Page() {
         const storedMode = localStorage.getItem('darkMode');
         if (storedMode === 'enabled') {
             setDarkMode(true);
+        }
+        // Verifica se o token existe ao carregar o componente
+        const savedToken = localStorage.getItem('token');
+        if (!savedToken) {
+            console.warn('Token não encontrado no localStorage');
+        } else {
+            setToken(savedToken);
         }
     }, []);
     
@@ -101,6 +114,10 @@ export default function Page() {
                             </a>
                         </span>
                     </div>
+                    {/* Mensagem amigável se o token não existir */}
+                    {!token && (
+                        <div className="mt-4 text-red-400 text-sm">Token não encontrado. Faça login para acessar as funcionalidades protegidas.</div>
+                    )}
                 </form>
             </div>
         </div>

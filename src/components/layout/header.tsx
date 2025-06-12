@@ -7,7 +7,7 @@ import path from "path";
 import { UsuarioService } from "@/service/ApiConnection";
 import { Usuario } from "@/context/DataInterface";
 
-export default function Page() {
+export default function Header() {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const pathname = usePathname();
@@ -73,8 +73,8 @@ export default function Page() {
 
     return (
         <div className="h-screen p-2">
-            <div className={`${open === true ? "w-15" : "w-72"} h-full relative pt-1 bg-neutral-900 rounded-2xl flex flex-col justify-between transition-all ease-in-out duration-300`}>
-                <button onClick={() => setOpen(!open)} className="px-1 py-0 bg-blue-400 rounded-full text-lg text-black font-bold absolute top-5/12 -right-3 cursor-pointer z-40">
+            <div className={`${open === true ? "w-20" : "w-64"} h-full relative pt-1 bg-neutral-900 rounded-2xl flex flex-col justify-between transition-all ease-in-out duration-300`}>
+                <button onClick={() => setOpen(!open)} className="px-1 py-0 bg-blue-400 rounded-full text-lg text-black font-bold absolute top-1/2 -right-3 transform -translate-y-1/2 cursor-pointer z-40">
                     <ChevronsLeft className={`${open === true ? "hidden" : ""}`} />
                     <ChevronsRight className={`${open === true ? "" : "hidden"}`} />
                 </button>

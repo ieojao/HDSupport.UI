@@ -8,6 +8,7 @@ import History from "@/components/dashboard/history";
 import { useEffect, useState } from "react";
 import { ChamadosService } from "@/service/ApiConnection";
 import Loading from "@/components/layout/loading";
+import { LayoutDashboard } from "lucide-react";
 
 export default function Home() {
     const [loading, setLoading] = useState(false);
@@ -61,10 +62,10 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="w-full h-screen flex items-start overflow-hidden">
-            <Header />
+        <div className="w-full h-screen flex flex-col items-start overflow-hidden">
+            <h1 className="p-5 text-2xl font-bold flex justify-center items-center space-x-2"><p><LayoutDashboard /></p>Dashboard</h1>
             <div className="w-full h-screen px-10 flex flex-col items-center overflow-auto space-y-7">
-                <div className="flex w-full pt-10 space-x-3">
+                <div className="flex w-full space-x-3">
                     <div className="w-full flex items-center space-x-3 ">
                         {chamados.map((item) => (
                             <div className="w-full flex justify-center">

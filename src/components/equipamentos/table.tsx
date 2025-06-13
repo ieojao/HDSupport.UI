@@ -94,8 +94,8 @@ export default function Page() {
     const currentEquipamentos = filteredEquipamentos.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div className="w-full mx-5 my-10 flex justify-center items-start">
-            <div className="w-10/12  min-w-4xl">
+        <div className="w-full my-5 flex justify-center items-start">
+            <div className="w-full  min-w-4xl">
                 <div className="w-full py-3 px-5 bg-neutral-800 flex justify-between rounded-t-2xl">
                     <div className="w-full pt-3 px-5 bg-neutral-800 flex justify-between">
                         <input

@@ -1,10 +1,10 @@
 "use client"
-import Header from "@/components/layout/header";
+import { useState } from "react";
 
 export default function Page(){
-    return(
+    return (
         <div>
-
+            
         </div>
     )
 }

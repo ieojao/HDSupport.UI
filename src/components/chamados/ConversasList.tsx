@@ -31,7 +31,6 @@ export default function ConversasList({ onSelect, selectedChat }: any) {
     })
       .then(res => res.json())
       .then(data => {
-        console.log("Retorno bruto da API:", data);
         const conversasFormatadas: Conversa[] = data.map((item: any) => ({
           id: item.id,
           usuario: item.cliente?.nme_Usuario || item.funcionarios?.nme_Usuario || "Desconhecido",
@@ -41,19 +40,14 @@ export default function ConversasList({ onSelect, selectedChat }: any) {
           data: item.dta_Inicio_Conversa ? new Date(item.dta_Inicio_Conversa).toLocaleString('pt-BR') : "",
         }));
         setConversas(conversasFormatadas);
-      })
-      .catch(err => {
-        console.error("Erro ao buscar chamados:", err);
       });
   }, []);
 
   const handleStatusChange = (id: number) => {
     const token = localStorage.getItem('token');
-    // Atualiza no frontend
-    setConversas(conversas.map(c =>
+    setConversas((conversas as any[]).map((c: any) =>
       c.id === id ? { ...c, status: "OPEN" } : c
     ));
-    // Atualiza no backend
     fetch(`https://localhost:7299/api/Conversa/Atualizar-status-Conversa/${id}?status=3`, {
       method: 'PUT',
       headers: {
@@ -70,8 +64,7 @@ export default function ConversasList({ onSelect, selectedChat }: any) {
       })
       .catch(err => {
         console.error('Erro ao atualizar status:', err);
-        // Reverte o status no frontend em caso de erro
-        setConversas(conversas.map(c =>
+        setConversas((conversas as any[]).map((c: any) =>
           c.id === id ? { ...c, status: "PENDING" } : c
         ));
       });
@@ -79,11 +72,9 @@ export default function ConversasList({ onSelect, selectedChat }: any) {
 
   const handleFinalizarChamado = (id: number) => {
     const token = localStorage.getItem('token');
-    // Atualiza no frontend
-    setConversas(conversas.map(c =>
+    setConversas((conversas as any[]).map((c: any) =>
       c.id === id ? { ...c, status: "SOLVED" } : c
     ));
-    // Atualiza no backend
     fetch(`https://localhost:7299/api/Conversa/Atualizar-status-Conversa/${id}?status=2`, {
       method: 'PUT',
       headers: {
@@ -109,7 +100,7 @@ export default function ConversasList({ onSelect, selectedChat }: any) {
   );
 
   return (
-    <div className="flex flex-col h-full p-4">
+    <div className="flex flex-col h-full min-h-0 p-8 bg-neutral-950">
       <h2 className="text-xl font-bold text-white mb-4">Conversas</h2>
       <input
         className="mb-4 p-2 rounded bg-neutral-800 text-white placeholder:text-blue-300 w-full border border-neutral-700"
@@ -139,7 +130,7 @@ export default function ConversasList({ onSelect, selectedChat }: any) {
           </div>
           {c.status === "PENDING" && (
             <button
-              className="ml-3 border border-[#0479ff] hover:bg-gray-600 text-white rounded-full p-2 flex items-center justify-center transition"
+              className="ml-3 border border-[#0479ff] hover:bg-gray-600 text-white rounded-full p-2 flex items-center justify-center transition cursor-pointer"
               onClick={e => { e.stopPropagation(); handleStatusChange(c.id); }}
               title="Marcar como aberto"
             >

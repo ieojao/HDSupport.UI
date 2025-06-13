@@ -5,9 +5,10 @@ import ChatModal from "./ChatModal";
 
 type ChamadoItemProps = {
   chamado: any;
+  onFinalizarChamado: (chamado: any) => void;
 };
 
-export default function ChamadoItem({ chamado }: ChamadoItemProps) {
+export default function ChamadoItem({ chamado, onFinalizarChamado }: ChamadoItemProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -24,7 +25,7 @@ export default function ChamadoItem({ chamado }: ChamadoItemProps) {
           Chat
         </button>
       </div>
-      {open && <ChatModal chamado={chamado} onClose={() => setOpen(false)} />}
+      {open && <ChatModal chamado={chamado} onClose={() => setOpen(false)} onFinalizarChamado={onFinalizarChamado} />}
     </>
   );
 }

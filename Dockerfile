@@ -1,4 +1,4 @@
-FROM node:20.13.1
+FROM node:22.14.0
 
 # Define o diretório de trabalho
 WORKDIR /app
@@ -12,9 +12,9 @@ ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 # Copia os arquivos do projeto
-COPY my-app/. .
-COPY ["my-app/package.json", "package.json"]
-COPY ["my-app/package-lock.json", "package-lock.json"]
+COPY . .
+COPY ["package.json", "package.json"]
+COPY ["package-lock.json", "package-lock.json"]
 
 # Instala as dependências
 RUN npm install

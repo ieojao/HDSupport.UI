@@ -1,10 +1,12 @@
 "use client"
 import { useState } from 'react';
+import { UsuarioService } from "@/service/ApiConnection";
 
 interface Equipamento {
     nome: string;
     dataEmprestimo: string;
     dataDevolucao: string;
+    status?: 'ativo' | 'expirado' | 'devolvido';
 }
 
 interface User {
@@ -20,18 +22,15 @@ interface User {
 export default function UserTable() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCargo, setSelectedCargo] = useState('');
+    const [selectedSquad, setSelectedSquad] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-    const totalPages = 1; // Ajuste conforme a quantidade de usuários reais
-
-    // Dados de exemplo - você deve substituir isso com dados reais da sua API
-    const users: User[] = [
+    const [users, setUsers] = useState<User[]>([
         {
             id: 1,
             name: "Jhuan Soja",
-            email: "soja909@gmail.com",
+            email: "sojinha@gmail.com",
             cargo: "Lider",
             squad: "Escolinha de TI",
             status: true,
@@ -69,10 +68,133 @@ export default function UserTable() {
             status: false,
             equipamentos: [
                 { nome: 'Notebook', dataEmprestimo: '2024-03-15', dataDevolucao: '2024-04-15' },
-                { nome: 'Headset', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' }
+                { nome: 'Headset', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Mouse', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Teclado', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Monitor', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo HDMI', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo VGA', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo USB', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo Ethernet', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo VGA', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo HDMI', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo VGA', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo HDMI', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo VGA', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo HDMI', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo VGA', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo HDMI', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                { nome: 'Cabo VGA', dataEmprestimo: '2024-03-18', dataDevolucao: '2025-07-18' },
+                { nome: 'Cabo HDMI', dataEmprestimo: '2024-03-18', dataDevolucao: '2024-04-18' },
+                
+
             ]
         }
-    ];
+    ]);
+    const itemsPerPage = 10;
+    const totalPages = 1; // Ajuste conforme a quantidade de usuários reais
+
+    // Função para calcular o status do empréstimo
+    const calcularStatusEmprestimo = (dataDevolucao: string): 'ativo' | 'expirado' | 'devolvido' => {
+        const hoje = new Date();
+        const dataDevolucaoObj = new Date(dataDevolucao);
+        
+        // Se a data de devolução já passou, está expirado
+        if (hoje > dataDevolucaoObj) {
+            return 'expirado';
+        }
+        
+        // Se ainda não chegou a data de devolução, está ativo
+        return 'ativo';
+    };
+
+    // Função para obter a cor do status
+    const getStatusColor = (status: 'ativo' | 'expirado' | 'devolvido') => {
+        switch (status) {
+            case 'ativo':
+                return 'bg-green-500';
+            case 'expirado':
+                return 'bg-red-500';
+            case 'devolvido':
+                return 'bg-gray-500';
+            default:
+                return 'bg-gray-500';
+        }
+    };
+
+    // Função para obter a cor do texto do status
+    const getStatusTextColor = (status: 'ativo' | 'expirado' | 'devolvido') => {
+        switch (status) {
+            case 'ativo':
+                return 'text-green-400';
+            case 'expirado':
+                return 'text-red-400';
+            case 'devolvido':
+                return 'text-gray-400';
+            default:
+                return 'text-gray-400';
+        }
+    };
+
+    // Função para obter o texto do status
+    const getStatusText = (status: 'ativo' | 'expirado' | 'devolvido') => {
+        switch (status) {
+            case 'ativo':
+                return 'Ativo';
+            case 'expirado':
+                return 'Expirado';
+            case 'devolvido':
+                return 'Devolvido';
+            default:
+                return 'Desconhecido';
+        }
+    };
+
+    // Obter squads únicos dos dados
+    const uniqueSquads = [...new Set(users.map(user => user.squad))];
+
+    // Filtrar usuários baseado nos critérios de busca
+    const filteredUsers = users.filter(user => {
+        const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                             user.email.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCargo = selectedCargo === '' || user.cargo === selectedCargo;
+        const matchesSquad = selectedSquad === '' || user.squad === selectedSquad;
+        
+        return matchesSearch && matchesCargo && matchesSquad;
+    });
+
+    const handleStatusChange = async (userId: number, newStatus: boolean) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Token não encontrado. Faça login novamente.');
+                return;
+            }
+
+            // Atualizar o estado local imediatamente para feedback visual
+            setUsers(prevUsers => 
+                prevUsers.map(user => 
+                    user.id === userId ? { ...user, status: newStatus } : user
+                )
+            );
+
+            // Chamar a API para atualizar no backend
+            await UsuarioService.AtualizarStatusUsuario(token, userId, newStatus);
+            
+            console.log(`Usuário ${newStatus ? 'ativado' : 'desativado'} com sucesso!`);
+        } catch (error) {
+            console.error('Erro ao atualizar status do usuário:', error);
+            
+            // Reverter o estado local em caso de erro
+            setUsers(prevUsers => 
+                prevUsers.map(user => 
+                    user.id === userId ? { ...user, status: !newStatus } : user
+                )
+            );
+            
+            alert(`Erro ao ${newStatus ? 'ativar' : 'desativar'} usuário. Tente novamente.`);
+        }
+    };
 
     const openProfile = (user: User) => {
         setSelectedUser(user);
@@ -109,6 +231,18 @@ export default function UserTable() {
                             <option value="Desenvolvedor">Desenvolvedor</option>
                             <option value="Designer">Designer</option>
                             <option value="Gerente">Gerente</option>
+                            <option value="Lider">Lider</option>
+                            <option value="Fúncionário">Fúncionário</option>
+                        </select>
+                        <select
+                            className="bg-[#23272b] border border-[#444] text-[#f1f1f1] px-4 py-2 rounded-lg outline-none"
+                            value={selectedSquad}
+                            onChange={(e) => setSelectedSquad(e.target.value)}
+                        >
+                            <option value="">Todas as squads</option>
+                            {uniqueSquads.map((squad) => (
+                                <option key={squad} value={squad}>{squad}</option>
+                            ))}
                         </select>
                     </div>
                 </div>
@@ -127,7 +261,7 @@ export default function UserTable() {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user) => (
+                            {filteredUsers.map((user) => (
                                 <tr key={user.id} className="hover:bg-[#23243a]">
                                     <td className="px-4 py-3 text-[#b0b0b0] font-medium">{user.id}</td>
                                     <td className="px-4 py-3 text-white">{user.name}</td>
@@ -140,7 +274,7 @@ export default function UserTable() {
                                                 type="checkbox"
                                                 className="opacity-0 w-0 h-0"
                                                 checked={user.status}
-                                                onChange={() => {}}
+                                                onChange={(e) => handleStatusChange(user.id, e.target.checked)}
                                             />
                                             <span className={`absolute cursor-pointer top-0 left-0 right-0 bottom-0 rounded-full transition-colors ${
                                                 user.status ? 'bg-[#6c63ff]' : 'bg-[#444]'
@@ -184,56 +318,204 @@ export default function UserTable() {
             </div>
 
             {modalOpen && selectedUser && (
-                <div className="modal-perfil fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="modal-content bg-[#23272b] rounded-[18px_18px_16px_16px] shadow-2xl w-full max-w-[600px] p-0 overflow-hidden border-t-4 border-[#2196f3]">
-                        <div className="modal-header bg-[#111] text-white flex items-center px-7 pt-[18px] pb-3.5 border-b-2 border-[#23272b] relative rounded-t-[18px]">
-                            <span className="modal-icon mr-2.5">
-                                <svg width="28" height="28" fill="#2196f3" viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+                <div className="modal-perfil fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="modal-content bg-[#23272b] rounded-[18px] shadow-2xl w-full max-w-[900px] max-h-[95vh] overflow-hidden border-t-4 border-[#2196f3] flex flex-col">
+                        {/* Header */}
+                        <div className="modal-header bg-[#111] text-white flex items-center px-6 py-4 border-b-2 border-[#23272b] relative rounded-t-[18px] flex-shrink-0">
+                            <span className="modal-icon mr-3">
+                                <svg width="28" height="28" fill="#2196f3" viewBox="0 0 24 24">
+                                    <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+                                </svg>
                             </span>
-                            <span className="modal-title flex-1 text-[1.3rem] font-semibold"><b>Dados do <span className="text-[#2196f3]">Usuário</span></b></span>
-                            <button onClick={closeProfile} className="modal-close text-[#2196f3] hover:text-white text-2xl font-bold ml-2 transition-colors absolute right-6 top-3">&times;</button>
+                            <span className="modal-title flex-1 text-[1.3rem] font-semibold">
+                                <b>Dados do <span className="text-[#2196f3]">Usuário</span></b>
+                            </span>
+                            <button 
+                                onClick={closeProfile} 
+                                className="modal-close text-[#2196f3] hover:text-white text-2xl font-bold transition-colors"
+                            >
+                                &times;
+                            </button>
                         </div>
-                        <div className="modal-body p-[28px_32px_32px_32px] bg-[#23272b]">
-                            <div className="perfil-info flex items-center mb-[18px]">
-                                <div className="perfil-avatar mr-[18px]">
-                                    <svg width="48" height="48" fill="#2196f3" viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+
+                        {/* Body */}
+                        <div className="modal-body flex-1 overflow-y-auto p-6 bg-[#23272b]">
+                            {/* Informações do usuário */}
+                            <div className="perfil-info flex flex-col sm:flex-row items-start sm:items-center mb-6 p-4 bg-[#181a1b] rounded-lg">
+                                <div className="perfil-avatar mb-4 sm:mb-0 sm:mr-6">
+                                    <div className="w-16 h-16 bg-[#2196f3] rounded-full flex items-center justify-center">
+                                        <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                                            <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div className="perfil-dados flex flex-col gap-[2px]">
-                                    <div className="perfil-nome text-[1.3rem] font-semibold text-white">{selectedUser.name}</div>
-                                    <div className="perfil-cargo text-[1rem] text-[#b0b0b0]">{selectedUser.cargo} - {selectedUser.squad}</div>
-                                    <div className="perfil-email text-[0.98rem] text-[#b0b0b0]">{selectedUser.email}</div>
+                                <div className="perfil-dados flex flex-col gap-2 flex-1">
+                                    <div className="perfil-nome text-[1.4rem] font-bold text-white">{selectedUser.name}</div>
+                                    <div className="perfil-cargo text-[1rem] text-[#b0b0b0] flex items-center gap-2">
+                                        <span className="bg-[#2196f3] text-white px-3 py-1 rounded-full text-sm font-medium">
+                                            {selectedUser.cargo}
+                                        </span>
+                                        <span className="text-[#6c63ff]">•</span>
+                                        <span>{selectedUser.squad}</span>
+                                    </div>
+                                    <div className="perfil-email text-[0.98rem] text-[#b0b0b0] flex items-center gap-2">
+                                        <svg width="16" height="16" fill="#2196f3" viewBox="0 0 24 24">
+                                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                        </svg>
+                                        {selectedUser.email}
+                                    </div>
+                                    <div className="perfil-status flex items-center gap-2 mt-2">
+                                        <div className={`w-3 h-3 rounded-full ${selectedUser.status ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                        <span className={`text-sm font-medium ${selectedUser.status ? 'text-green-400' : 'text-red-400'}`}>
+                                            {selectedUser.status ? 'Ativo' : 'Inativo'}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="equipamentos-area mt-[18px]">
-                                <div className="equipamentos-titulo text-[1.1rem] text-[#2196f3] font-semibold mb-2">Equipamentos emprestados</div>
-                                <ul className="equipamentos-lista list-none p-0 m-0">
+
+                            {/* Seção de equipamentos */}
+                            <div className="equipamentos-area">
+                                <div className="equipamentos-header flex items-center justify-between mb-4">
+                                    <div className="equipamentos-titulo text-[1.2rem] text-[#2196f3] font-semibold flex items-center gap-2">
+                                        <svg width="24" height="24" fill="#2196f3" viewBox="0 0 24 24">
+                                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H5c-.55 0-1-.45-1-1V8l6.94 4.34c.65.41 1.47.41 2.12 0L20 8v9c0 .55-.45 1-1 1zm-7-7L4 6h16l-8 5z"/>
+                                        </svg>
+                                        Equipamentos emprestados
+                                        <span className="bg-[#2196f3] text-white px-2 py-1 rounded-full text-sm font-medium">
+                                            {selectedUser.equipamentos?.length || 0}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Contadores de status */}
+                                {selectedUser.equipamentos && selectedUser.equipamentos.length > 0 && (
+                                    <div className="status-counters flex flex-wrap gap-3 mb-4">
+                                        {(() => {
+                                            const ativos = selectedUser.equipamentos.filter(eq => 
+                                                calcularStatusEmprestimo(eq.dataDevolucao) === 'ativo'
+                                            ).length;
+                                            const expirados = selectedUser.equipamentos.filter(eq => 
+                                                calcularStatusEmprestimo(eq.dataDevolucao) === 'expirado'
+                                            ).length;
+                                            
+                                            return (
+                                                <>
+                                                    <div className="flex items-center gap-2 bg-green-900/30 border border-green-500/30 px-3 py-2 rounded-lg">
+                                                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                                        <span className="text-green-400 text-sm font-medium">Ativos: {ativos}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 bg-red-900/30 border border-red-500/30 px-3 py-2 rounded-lg">
+                                                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                                        <span className="text-red-400 text-sm font-medium">Expirados: {expirados}</span>
+                                                    </div>
+                                                </>
+                                            );
+                                        })()}
+                                    </div>
+                                )}
+
+                                {/* Lista compacta de equipamentos */}
+                                <div className="equipamentos-lista">
                                     {selectedUser.equipamentos && selectedUser.equipamentos.length > 0 ? (
-                                        selectedUser.equipamentos.map((eq, idx) => (
-                                            <li key={idx} className="bg-[#181a1b] text-white rounded-[7px] p-[14px_20px] mb-[12px] text-[1rem] flex flex-col gap-[6px] shadow-sm border-l-4 border-[#2196f3]">
-                                                <span className="equip-nome font-semibold text-[1.08rem] text-white flex items-center gap-2">
-                                                    <span className="text-[#2196f3]">🔹</span> {eq.nome}
-                                                </span>
-                                                <span className="equip-data text-[#b0b0b0] text-[0.98rem] flex items-center gap-2 mt-1">
-                                                    <svg width="18" height="18" fill="#2196f3" viewBox="0 0 24 24" style={{verticalAlign:'middle'}}><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1zm-7 5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                                                    Emprestado em: {eq.dataEmprestimo.split('-').reverse().join('/')}
-                                                </span>
-                                                <span className="equip-data text-[#b0b0b0] text-[0.98rem] flex items-center gap-2 mt-1">
-                                                    <svg width="18" height="18" fill="#2196f3" viewBox="0 0 24 24" style={{verticalAlign:'middle'}}><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1zm-7 5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                                                    Devolução prevista: {eq.dataDevolucao.split('-').reverse().join('/')}
-                                                </span>
-                                            </li>
-                                        ))
+                                        <div className="space-y-3">
+                                            {selectedUser.equipamentos.map((eq, idx) => {
+                                                const status = calcularStatusEmprestimo(eq.dataDevolucao);
+                                                return (
+                                                    <div key={idx} className={`bg-[#181a1b] text-white rounded-lg p-4 shadow-sm border-l-4 transition-colors hover:bg-[#1f2124] ${
+                                                        status === 'ativo' ? 'border-green-500' : 
+                                                        status === 'expirado' ? 'border-red-500' : 
+                                                        'border-gray-500'
+                                                    }`}>
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center gap-3 flex-1">
+                                                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                                                                    status === 'ativo' ? 'bg-green-500' : 
+                                                                    status === 'expirado' ? 'bg-red-500' : 
+                                                                    'bg-gray-500'
+                                                                }`}>
+                                                                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                                                                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H5c-.55 0-1-.45-1-1V8l6.94 4.34c.65.41 1.47.41 2.12 0L20 8v9c0 .55-.45 1-1 1zm-7-7L4 6h16l-8 5z"/>
+                                                                    </svg>
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <div className="flex items-center gap-2 mb-1">
+                                                                        <div className="equip-nome font-semibold text-[1rem] text-white truncate">
+                                                                            {eq.nome}
+                                                                        </div>
+                                                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                                            status === 'ativo' ? 'bg-green-500/20 text-green-400' : 
+                                                                            status === 'expirado' ? 'bg-red-500/20 text-red-400' : 
+                                                                            'bg-gray-500/20 text-gray-400'
+                                                                        }`}>
+                                                                            {getStatusText(status)}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className="flex items-center gap-4 text-sm text-[#b0b0b0]">
+                                                                        <div className="flex items-center gap-1">
+                                                                            <svg width="14" height="14" fill="#2196f3" viewBox="0 0 24 24">
+                                                                                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1zm-7 5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                                                            </svg>
+                                                                            <span>Emprestado: {eq.dataEmprestimo.split('-').reverse().join('/')}</span>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-1">
+                                                                            <svg width="14" height="14" fill="#6c63ff" viewBox="0 0 24 24">
+                                                                                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1zm-7 5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                                                            </svg>
+                                                                            <span className={status === 'expirado' ? 'text-red-400 font-medium' : ''}>
+                                                                                Devolução: {eq.dataDevolucao.split('-').reverse().join('/')}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="ml-4 flex-shrink-0">
+                                                                <div className={`w-3 h-3 rounded-full ${getStatusColor(status)}`}></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
                                     ) : (
-                                        <li className="text-[#b0b0b0]">Nenhum equipamento emprestado.</li>
+                                        <div className="text-center py-8 bg-[#181a1b] rounded-lg">
+                                            <svg width="64" height="64" fill="#6c63ff" className="mx-auto mb-4 opacity-50" viewBox="0 0 24 24">
+                                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H5c-.55 0-1-.45-1-1V8l6.94 4.34c.65.41 1.47.41 2.12 0L20 8v9c0 .55-.45 1-1 1zm-7-7L4 6h16l-8 5z"/>
+                                            </svg>
+                                            <p className="text-[#b0b0b0] text-lg">Nenhum equipamento emprestado</p>
+                                            <p className="text-[#666] text-sm mt-1">Este usuário não possui equipamentos em uso</p>
+                                        </div>
                                     )}
-                                </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    
                     <style jsx>{`
-                        .modal-perfil { background: rgba(0,0,0,0.7); z-index: 9999; }
-                        .modal-content { border-radius: 18px 18px 16px 16px; box-shadow: 0 4px 32px rgba(0,0,0,0.5); }
-                        .modal-header { border-radius: 18px 18px 0 0; }
+                        .modal-perfil { 
+                            background: rgba(0,0,0,0.8); 
+                            backdrop-filter: blur(4px);
+                        }
+                        .modal-content { 
+                            border-radius: 18px; 
+                            box-shadow: 0 8px 32px rgba(0,0,0,0.6); 
+                        }
+                        .modal-header { 
+                            border-radius: 18px 18px 0 0; 
+                        }
+                        .modal-body::-webkit-scrollbar {
+                            width: 8px;
+                        }
+                        .modal-body::-webkit-scrollbar-track {
+                            background: #2a2d31;
+                            border-radius: 4px;
+                        }
+                        .modal-body::-webkit-scrollbar-thumb {
+                            background: #6c63ff;
+                            border-radius: 4px;
+                        }
+                        .modal-body::-webkit-scrollbar-thumb:hover {
+                            background: #5a52d5;
+                        }
                     `}</style>
                 </div>
             )}

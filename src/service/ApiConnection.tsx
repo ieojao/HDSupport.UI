@@ -42,6 +42,16 @@ export class UsuarioService {
             }
         })
     }
+
+    static AtualizarStatusUsuario(token: string, id: number, status: boolean) {
+        return axiosInstance.put(`/Usuario/AtualizarStatus/${id}`, {
+            status_Usuario: status ? 1 : 0
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
 }
 
 export class ChamadosService {
